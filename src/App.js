@@ -6,11 +6,29 @@ import './App.css';
 function App() {
   const [movies ,setmovies]=useState([]);
   const [ isLoading,setLoading]=useState(false);
+  const [error,setErrror]=useState(null);
 
   const  fetchMovieHAndler = async()=>{
     setLoading(true);
-    const response=await fetch('https://swapi.dev/api/films',);
+    setErrror(null);
+    try{
+    const response=await fetch('https://swapi.dev/api/film',);
+    if(!response.ok){
+       
+      // setInterval(()=>{
+         throw new Error('Something went wrong ...Retrying');   
+      // },5000)
+      
+
+    }
+    
+   
+   
     const data= await response.json();
+
+
+    
+
       const transformedData=data.results.map(movieData=>{
         return {
           id:movieData.episode_id,
@@ -20,7 +38,28 @@ function App() {
         }
       })
       setmovies(transformedData);
-      setLoading(false);
+    }catch(error){
+       setErrror(error.message)
+    }
+    setLoading(false);
+
+  }
+
+
+
+
+  let content=<p>No data found</p>
+
+  if(error){
+  content=  <p>{error}</p>
+
+  }
+  if(isLoading){
+    content=<p>...Loading</p>
+  }
+  if(movies.length>0){
+     content=<MoviesList movies={movies} />
+
   }
 
   return (
@@ -28,10 +67,11 @@ function App() {
       <section>
         <button onClick={fetchMovieHAndler}  >Fetch Movies</button>
       </section>
-      <section>
-        {!isLoading && movies.length>0 && <MoviesList movies={movies} />}
-        {!isLoading && movies.length===0 && <p>No data found</p>}
+      <section>{content}
+        {/* {!isLoading && movies.length>0 && }
+        {!isLoading && movies.length===0 && !error && <p>No data found</p>}
         {isLoading &&  <p>...Ladding</p>}
+        {!isLoading && error && <p>{error}</p>} */}
       </section>
     </React.Fragment>
   );
