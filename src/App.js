@@ -20,6 +20,7 @@ function App() {
       setmovies(transformedData);
     })
   }
+
   return (
     <React.Fragment>
       <section>
